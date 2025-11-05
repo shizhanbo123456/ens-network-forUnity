@@ -153,7 +153,7 @@ id:
 
 NOMBehaviour:提供了网络行为的脚本
 --StreamUpdate()>>同Update，但每帧内在发送消息前一刻执行
---CallFuncServrRpc(funcName,mode{-1全部,-2忽略自身}/targets,[param],[KeyFormatType])
+--CallFuncRpc(funcName,mode{-1全部,-2忽略自身}/targets,[param],[KeyFormatType])
 NOMBehaviourCollection:管理每个由多个NOMBehaviour组成的网络物体
 --Init(data)>>生成物体时调用
 --Respawn(data)>>重新生成物体时调用
