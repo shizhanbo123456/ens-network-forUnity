@@ -1,7 +1,7 @@
 每次会把下列各语句合并，并用*分隔，一起发送
 
 
->>客户端接收                事件
+>>客户端接收
 [E](int eventId)(string id)                                      //eventId    ==1 OnClientConnect  ==2 OnClientDisconnect
 [E]1#0                                                                        ==3 OnServerConnect  ==4 OnServerDisconnect
                                                       //[E]3在C事件触发，[E]4在ShutDowm触发(超时/D事件/主动调用)
