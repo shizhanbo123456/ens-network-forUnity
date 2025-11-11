@@ -10,8 +10,7 @@ public class EnsRoom:Disposable
     public int RoomId;
     public int CurrentAuthorityAt = -1;
 
-    public bool RoomPublic = true;
-    public Dictionary<string,string> Rule=new Dictionary<string,string>();
+    public Dictionary<string, (char, string)> Rule = new Dictionary<string, (char, string)>();
 
     // >0为游戏过程中制造的物体的Id
     private int createdid = 1;

@@ -53,18 +53,11 @@ namespace ProtocolWrapper
             if (!reachTime.Reached) return;
             reachTime.ReachAfter(broadcastInterval);
 
-            StringBuilder sb = new StringBuilder();
-
-            foreach (var i in BroadcastContent)
-            {
-                sb.Append(',');
-                sb.Append("{"+i.Key+"}:{"+i.Value+"}");
-            }
-            sb.Append(',');
+            var s=','+Format.DictionaryToString(BroadcastContent)+',';
 
             try
             {
-                byte[] data = Format.GetBytes(sb.ToString());
+                byte[] data = Format.GetBytes(s);
                 senderClient.Send(data, data.Length, broadcastEndPoint);
             }
             catch
@@ -139,9 +132,8 @@ namespace ProtocolWrapper
                     if (msgstart == -1 || msgend == -1 || msgend <= msgstart) continue;
 
                     string msg = message.Substring(msgstart, msgend - msgstart + 1);
-                    var parts = Format.SplitWithBoundaries(msg,',');
-
-                    foreach (var part in parts)
+                    var s=msg.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var part in s)
                     {
                         HandleReceivedMesg(part);
                     }

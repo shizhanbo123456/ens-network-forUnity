@@ -67,7 +67,30 @@ public static class Format
         return segment;
     }
 
+    public static string DictionaryToString(Dictionary<string,string>dict)
+    {
+        StringBuilder sb = new StringBuilder();
 
+        bool first = true;
+        foreach (var i in dict)
+        {
+            if (first) first = false;
+            else sb.Append(',');
+            sb.Append("{" + i.Key + "}:{" + i.Value + "}");
+        }
+        return sb.ToString();
+    }
+    public static Dictionary<string, string> StringToDictionary(string data)
+    {
+        Dictionary<string, string> r = new Dictionary<string, string>();
+        var s=data.Split(',', StringSplitOptions.RemoveEmptyEntries);
+        foreach(var i in s)
+        {
+            var list=SplitWithBoundaries(i, ':');
+            r.Add(list[0], list[1]);
+        }
+        return r;
+    }
 
     public static string ListToString(List<int> list, char c=TargetSeparator)
     {

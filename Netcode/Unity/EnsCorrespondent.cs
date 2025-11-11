@@ -178,28 +178,64 @@ public class EnsCorrespondent :MonoBehaviour
             Debug.LogError("[E]客户端启动失败，IP=" + IP + " Port=" + Port + " Log:" + e.ToString());
         }
     }
-    /// <summary>
-    /// >0加入 ==0创建 <0离开
-    /// </summary>
-    public void JoinRoom(int id)
+
+    public void CreateRoom()
     {
-        if(networkMode != NetworkMode.Client)
+        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
         {
-            Debug.Log("[S]未启动客户端模式");
+            Debug.Log("当前不可进行房间操作");
             return;
         }
-        if (id >= 0 && EnsInstance.PresentRoomId != 0)
+        if (EnsInstance.PresentRoomId != 0)
         {
-            Debug.LogError("[S]已加入房间，无法再加入");
+            Debug.LogError("已加入房间，无法再加入");
             return;
         }
-        if (id < 0 && EnsInstance.PresentRoomId == 0)
-        {
-            Debug.LogError("[S]未加入房间，无法离开");
-            return;
-        }
-        Client.SendData("kR]"+id);
     }
+    public void SetRoomRule(string key,char op,int value)
+    {
+        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
+        {
+            Debug.Log("当前不可进行房间操作");
+            return;
+        }
+        if (EnsInstance.PresentRoomId == 0)
+        {
+            Debug.LogError("未加入房间");
+            return;
+        }
+    }
+    public void JoinRoom(int id,Dictionary<string,string>info)
+    {
+        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
+        {
+            Debug.Log("当前不可进行房间操作");
+            return;
+        }
+        if (EnsInstance.PresentRoomId != 0)
+        {
+            Debug.LogError("已加入房间，无法再加入");
+            return;
+        }
+    }
+    public void GetAllRules(int id)
+    {
+
+    }
+    public void ExitRoom()
+    {
+        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
+        {
+            Debug.Log("当前不可进行房间操作");
+            return;
+        }
+        if (EnsInstance.PresentRoomId == 0)
+        {
+            Debug.LogError("不在房间内");
+            return;
+        }
+    }
+
     public virtual void ShutDown()
     {
         //关闭后访问器会返回null
@@ -253,10 +289,6 @@ public class EnsCorrespondent :MonoBehaviour
         }
         EnsInstance.HasAuthority = false;
         EnsInstance.PresentRoomId = 0;
-    }
-    public void Request()
-    {
-
     }
 
     private void OnApplicationQuit()

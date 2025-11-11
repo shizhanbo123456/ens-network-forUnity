@@ -8,13 +8,8 @@ internal class EnsEventRegister
     {
         get=>EnsInstance.Corr;
     }
-    public static void RegistLog()
-    {
-        Log();
-    }
     public static void RegistUnity()
     {
-        Server_R();
         Server_A();
         Server_H();
         Server_D();
@@ -27,7 +22,6 @@ internal class EnsEventRegister
         Client_C();
         Client_E();
 
-        Client_R();
         Client_A();
         Client_H();
         Client_D();
@@ -42,7 +36,6 @@ internal class EnsEventRegister
     }
     public static void RegistDedicateServer()
     {
-        Server_R();
         Server_A();
         Server_H();
         Server_D();
@@ -95,54 +88,6 @@ internal class EnsEventRegister
                 if (e == 1) EnsInstance.OnClientEnter?.Invoke(i);
                 else if (e == 2) EnsInstance.OnClientExit?.Invoke(i);
                 else Debug.LogError("[E]存在错误的事件消息 " + data);
-            }
-        };
-    }
-    protected static void Server_R()
-    {
-        EnsInstance.ServerRecvData += (data, conn) =>
-        {
-            if (data[1] == 'R')
-            {
-                //0创建 >0加入 <0离开
-                int id = int.Parse(data.Substring(3, data.Length - 3));
-                int r = 0;
-                if (id == 0) r = EnsRoomManager.Instance.CreateRoom(conn);
-                else if (id > 0) r = EnsRoomManager.Instance.JoinRoom(conn, id);
-                else r = EnsRoomManager.Instance.ExitRoom(conn);
-
-                conn.SendData("kR]" + r);
-                if (EnsProgram.Instance.PrintRoomData) Debug.Log(EnsRoomManager.Instance.PrintData());
-            }
-        };
-    }
-    protected static void Client_R()
-    {
-        //处理返回的房间信息
-        EnsInstance.ClientRecvData += (data) =>
-        {
-            if (data[1] == 'R')
-            {
-                string[] s = data.Substring(3, data.Length - 3).Split('#');
-                int roomId = int.Parse(s[0]);
-                if (roomId > 0)//成功加入
-                {
-                    if (EnsInstance.DevelopmentDebug) Debug.Log("[S]加入了房间");
-                    EnsInstance.PresentRoomId = roomId;
-                    EnsInstance.OnEnterRoom.Invoke();
-                }
-                else if (roomId == 0)//成功离开
-                {
-                    if (EnsInstance.DevelopmentDebug) Debug.Log("[S]离开了房间");
-                    EnsInstance.PresentRoomId = 0;
-                    EnsInstance.OnServerDisconnect.Invoke();
-                }
-                else if (roomId <0)
-                {
-                    if (EnsInstance.DevelopmentDebug) Debug.LogError("[S]房间操作失败，Code="+roomId);
-                    EnsInstance.OnJoinFailed?.Invoke();
-                }
-                else Debug.LogError("[S]错误信息 " + data);
             }
         };
     }
@@ -403,7 +348,7 @@ internal class EnsEventRegister
     }
     protected static void ForceInvokeOnce_Room()
     {
-        EnsInstance.OnEnterRoom += () =>
+        EnsInstance.OnJoinRoom += () =>
         {
             EnsInstance.RoomExitInvoke = false;
         };
@@ -411,19 +356,6 @@ internal class EnsEventRegister
         {
             EnsInstance.RoomExitInvoke = true;
         };
-    }
-    protected static void Log()
-    {
-        EnsInstance.OnClientEnter += (id) => Debug.Log("[S]Event:有新的客户端加入房间，id=" + id);
-        EnsInstance.OnClientExit += (id) => Debug.Log("[S]Event:客户端离开房间，id=" + id);
-        EnsInstance.OnServerConnect += (id) => Debug.Log("[S]Event:已连接到服务器,id="+id);
-        EnsInstance.OnServerDisconnect += () =>Debug.Log("[S]Event:和服务器断开连接");
-
-        EnsInstance.OnEnterRoom += () =>Debug.Log("[S]Event:已加入房间");
-        EnsInstance.OnExitRoom += () => Debug.Log("[S]Event:已离开房间");;
-        EnsInstance.OnJoinFailed += ()=>Debug.Log("加入失败");
-
-        EnsInstance.OnAuthorityChanged += b => Debug.Log("当前权限状态："+b);
     }
 
     private static void SyncSendTo(List<string> s, int senderDelay, EnsConnection target)

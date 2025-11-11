@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine;
 
 public class EnsInstance
 {
@@ -27,12 +25,25 @@ public class EnsInstance
     public static Action OnConnectionRejected;
     public static Action<int> OnServerConnect;
     public static Action OnServerDisconnect;
-    public static Action OnEnterRoom;
+
+    public static Action OnSetRomeRuleSucceed;
+    public static Action OnJoinRoom;//创建或加入时调用
     public static Action OnExitRoom;
-    public static Action OnJoinFailed;
     public static Action<int> OnClientEnter;//有新用户连接到服务器时触发(新用户自身不调用)              ENCConnection连接后向其它连接发送
     public static Action<int> OnClientExit;//有用户与服务器断开时调用(断开的用户自身不调用)         ENCHeartBeat的ServerSRHB广播
     public static Action<bool> OnAuthorityChanged;
+    public static Action OnJoinFailedByLocked;
+    public static Action OnJoinFailedByInfoLack;
+    public static Action<List<string>> OnJoinFailedByNotMatched;
+    public static Action OnRoomNotFound;
+    public static Action<List<string>> OnGetRoomRule;
+
+    public static Action OnCreateRoomTimeOut;
+    public static Action OnSetRoomRuleTimeOut;
+    public static Action OnJoinRoomTimeOut;
+    public static Action OnGetRoomRuleTimeOut;
+    public static Action OnExitRoomTimeOut;
+
 
     //确保断开连接事件只会触发一次(避免多次调用ShutDown)
     //用户不需要注意此参数

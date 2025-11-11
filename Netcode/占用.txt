@@ -1,7 +1,7 @@
 每次会把下列各语句合并，并用*分隔，一起发送
 
 
->>客户端接收
+>>客户端接收                事件
 [E](int eventId)(string id)                                      //eventId    ==1 OnClientConnect  ==2 OnClientDisconnect
 [E]1#0                                                                        ==3 OnServerConnect  ==4 OnServerDisconnect
                                                       //[E]3在C事件触发，[E]4在ShutDowm触发(超时/D事件/主动调用)
@@ -10,21 +10,6 @@
 >>客户端接收                分配Id
 [C](int Clientid)
 [C]10
-
->>服务器接收
-[R]0                 =0 创建房间/设置
-[R]1#password:222    =1 设置规则{rule}
-[R]2#12345#pwd:2     =2 加入房间(roomId){rule}
-[R]3#12345           =3 获取房间规则{roomId}
-[R]4                 =4 离开房间
-
->>客户端接收
-[R](int operationId){string operationInfo}
-[R]0#10001           =0 表示创建了房间 error:已经在房间(roomid<0)
-[R]1#password:222    =1 当前房间全部限制 error:房间不存在
-[R]2#1               =2 是否成功加入 error:房间不存在/未提供信息
-[R]3#password:222    =3 房间全部规则 error:房间不存在
-[R]4#1               =4 是否成功离开 error:离开时不在房间里
 
 >>服务器接收
 [A](int clientId)

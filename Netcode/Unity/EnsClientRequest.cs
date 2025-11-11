@@ -9,14 +9,23 @@ public static class EnsClientRequst
 
     private static Dictionary<string,float>ActiveRequestHeader = new Dictionary<string, float>();
 
+    /// <summary>
+    /// 若无需关注返回值则不用注册
+    /// </summary>
     public static void RegistRequest(string header, Action<string> callback,Action timeout=null)
     {
-        if (CallbackEvents.ContainsKey(header)) CallbackEvents[header] += callback;
+        if (CallbackEvents.ContainsKey(header))
+        {
+            CallbackEvents[header] += callback;
+            Debug.LogWarning("添加了重复的请求头");
+        }
         else CallbackEvents.Add(header, callback);
-        
-        if (timeout == null) return;
-        if (TimeoutEvents.ContainsKey(header)) TimeoutEvents[header] += timeout;
-        else TimeoutEvents.Add(header, timeout);
+
+        if (timeout == null)
+        {
+            if (TimeoutEvents.ContainsKey(header)) TimeoutEvents[header] += timeout;
+            else TimeoutEvents.Add(header, timeout);
+        }
     }
     public static bool SendRequest(string header,string content,bool keyValue=true)
     {
