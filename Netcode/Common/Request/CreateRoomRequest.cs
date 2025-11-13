@@ -27,8 +27,7 @@ namespace Ens.Request
             }
             protected override void HandleReply(string data)
             {
-                var id = int.Parse(data);
-                EnsInstance.PresentRoomId = id;
+                EnsInstance.PresentRoomId = int.Parse(data);
                 OnCreateRoom?.Invoke();
             }
             internal override void TimeOut()

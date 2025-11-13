@@ -27,6 +27,7 @@ namespace Ens.Request
             }
             protected override void HandleReply(string data)
             {
+                EnsInstance.PresentRoomId = 0;
                 OnRecvReply?.Invoke();
             }
             internal override void TimeOut()

@@ -12,7 +12,8 @@ namespace Ens.Request
 
             public static Action OnRecvReply;
             public static Action OnTimeOut;
-            public static Action<int> OnRoomNotFoundError;
+            public static Action OnRoomNotFoundError;
+            public static Action AlreadyInRoomError;
 
             private static JoinRoom Instance;
             internal JoinRoom() : base()
@@ -25,7 +26,8 @@ namespace Ens.Request
             }
             protected override void Error(int code, string data)
             {
-                OnRoomNotFoundError?.Invoke(code);
+                if (code == 0) OnRoomNotFoundError?.Invoke();
+                else AlreadyInRoomError?.Invoke();
             }
             protected override void HandleReply(string data)
             {

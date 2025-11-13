@@ -370,11 +370,15 @@ internal class EnsEventRegister
     }
     protected static void ForceInvokeOnce_Room()
     {
+        EnsInstance.OnCreateRoom += () =>
+        {
+            EnsInstance.RoomExitInvoke = false;
+        };
         EnsInstance.OnJoinRoom += () =>
         {
             EnsInstance.RoomExitInvoke = false;
         };
-        EnsInstance.OnExitRoom += () =>
+        EnsInstance.OnExit += () =>
         {
             EnsInstance.RoomExitInvoke = true;
         };

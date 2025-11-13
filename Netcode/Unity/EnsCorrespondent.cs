@@ -160,62 +160,15 @@ public class EnsCorrespondent :MonoBehaviour
             Debug.LogError("[E]客户端启动失败，IP=" + IP + " Port=" + Port + " Log:" + e.ToString());
         }
     }
-
-    public void CreateRoom()
+    public void SetServerListening(bool listening)
     {
-        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
+        if (Server == null)
         {
-            Debug.Log("当前不可进行房间操作");
+            Debug.LogError("未启动服务器");
             return;
         }
-        if (EnsInstance.PresentRoomId != 0)
-        {
-            Debug.LogError("已加入房间，无法再加入");
-            return;
-        }
-    }
-    public void SetRoomRule(string key,char op,int value)
-    {
-        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
-        {
-            Debug.Log("当前不可进行房间操作");
-            return;
-        }
-        if (EnsInstance.PresentRoomId == 0)
-        {
-            Debug.LogError("未加入房间");
-            return;
-        }
-    }
-    public void JoinRoom(int id,Dictionary<string,string>info)
-    {
-        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
-        {
-            Debug.Log("当前不可进行房间操作");
-            return;
-        }
-        if (EnsInstance.PresentRoomId != 0)
-        {
-            Debug.LogError("已加入房间，无法再加入");
-            return;
-        }
-    }
-    public void GetAllRules(int id)
-    {
-
-    }
-    public void ExitRoom()
-    {
-        if (networkMode == NetworkMode.Server || networkMode == NetworkMode.None)
-        {
-            Debug.Log("当前不可进行房间操作");
-            return;
-        }
-        if (EnsInstance.PresentRoomId == 0)
-        {
-            Debug.LogError("不在房间内");
-            return;
-        }
+        if(listening)Server.StartListening();
+        else Server.EndListening();
     }
 
     public virtual void ShutDown()
@@ -262,7 +215,7 @@ public class EnsCorrespondent :MonoBehaviour
         networkMode = NetworkMode.None;
         if (!EnsInstance.RoomExitInvoke)
         {
-            EnsInstance.OnExitRoom.Invoke();
+            EnsInstance.OnExit.Invoke();
         }
         if (!EnsInstance.ServerDisconnectInvoke)
         {

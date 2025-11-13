@@ -26,7 +26,44 @@ public class EnsInstance
     public static Action<int> OnClientExit;//有用户与服务器断开时调用(断开的用户自身不调用)
     public static Action<bool> OnAuthorityChanged;
 
-    public static Action OnCreateRoom => CreateRoom.OnCreateRoom;
+    public static Action OnCreateRoom { get => CreateRoom.OnCreateRoom; set=>CreateRoom.OnCreateRoom+=value; }
+    public static Action SetRuleSucceed { get => SetRule.OnRecvReply; set => SetRule.OnRecvReply += value; }
+    public static Action OnJoinRoom { get =>JoinRoom.OnRecvReply; set =>JoinRoom.OnRecvReply += value; }
+    public static Action<Dictionary<string, (char, int)>> OnGetRule { get => GetRule.OnRecvReply; set => GetRule.OnRecvReply += value; }
+    public static Action OnExit { get => ExitRoom.OnRecvReply; set => ExitRoom.OnRecvReply += value; }
+    public static Action<int, List<int>> OnGetRoomList { get => GetRoomList.OnRecvReply; set => GetRoomList.OnRecvReply += value; }
+
+    public static Action CreateRoomTimeout { get => CreateRoom.OnTimeOut; set => CreateRoom.OnTimeOut += value; }
+    public static Action AlredyInRoomOnCreate { get => CreateRoom.AlreadyInRoomException; set => CreateRoom.AlreadyInRoomException += value; }
+    public static Action SetRuleTimeOut { get => SetRule.OnTimeOut; set => SetRule.OnTimeOut += value; }
+    public static Action NotInRoomOnSetRule { get => SetRule.NotInRoomError; set => SetRule.NotInRoomError += value; }
+    public static Action JoinRoomTimeOut { get => JoinRoom.OnTimeOut; set => JoinRoom.OnTimeOut += value; }
+    public static Action RoomNotFoundOnJoin { get => JoinRoom.OnRoomNotFoundError; set => JoinRoom.OnRoomNotFoundError += value; }
+    public static Action AlreadyInRoomOnJoin { get => JoinRoom.AlreadyInRoomError; set => JoinRoom.AlreadyInRoomError += value; }
+    public static Action GetRuleTimeOut { get => GetRule.OnTimeOut; set => GetRule.OnTimeOut += value; }
+    public static Action RoomNotFoundOnGetRule { get => GetRule.RoomNotFoundError; set => GetRule.RoomNotFoundError += value; }
+    public static Action ExitRoomTimeOut { get => ExitRoom.OnTimeOut; set => ExitRoom.OnTimeOut += value; }
+    public static Action RoomNotFoundOnExit { get => ExitRoom.NotInRoomException; set => ExitRoom.NotInRoomException += value; }
+    public static Action GetRoomListTimeOut { get => GetRoomList.OnTimeOut; set => GetRoomList.OnTimeOut += value; }
+
+    public static void OnTimeOut(Action action)
+    {
+        CreateRoomTimeout += action;
+        SetRuleTimeOut += action;
+        JoinRoomTimeOut += action;
+        GetRuleTimeOut += action;
+        ExitRoomTimeOut += action;
+        GetRoomListTimeOut += action;
+    }
+    public static void OnError(Action action)
+    {
+        AlredyInRoomOnCreate += action;
+        NotInRoomOnSetRule += action;
+        RoomNotFoundOnJoin += action;
+        AlreadyInRoomOnJoin += action;
+        RoomNotFoundOnGetRule += action;
+        RoomNotFoundOnExit += action;
+    }
 
 
     //确保断开连接事件只会触发一次(避免多次调用ShutDown)
