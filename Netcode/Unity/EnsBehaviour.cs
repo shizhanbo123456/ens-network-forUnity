@@ -44,7 +44,6 @@ public abstract class EnsBehaviour : MonoBehaviour
         {
             ObjectId = EnsNetworkObjectManager.AutoSceneObjId;
             internalAllocateId = true;
-            if (EnsInstance.LogOnAutoAssignedId) Debug.Log(gameObject.name + "已被自动分配id:" + ObjectId);
         }
         else
         {

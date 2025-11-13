@@ -5,32 +5,36 @@ using UnityEngine;
 /// <summary>
 /// 实例化时启动客户端
 /// </summary>
-public class EnsClient:SR
+internal class EnsClient:SR
 {
     protected KeyLibrary KeyLibrary;
 
     private ProtocolBase Client;
 
-    public override bool On()
+    internal override bool On()
     {
         if(Client == null)return false;
         return Client.On;
     }
 
     protected EnsClient(){ }
-    public EnsClient(string ip,int port)
+    internal EnsClient(string ip,int port)
     {
         KeyLibrary = new KeyLibrary();
 
         Client = Protocol.GetClient(ip,port);
     }
-    public override void SendData(string data)
+    internal override void SendData(string data)
     {
         if (data[0] == 'k' || data[0]=='K')
         {
             KeyLibrary.Add(data);
         }
         else Client.SendData(data);
+    }
+    internal bool Initilized()
+    {
+        return Client.Initialized;
     }
     internal override void Update()
     {
@@ -61,12 +65,10 @@ public class EnsClient:SR
             }
         }
     }
-    public override void ShutDown()
+    internal override void ShutDown()
     {
         Client.ShutDown();
         KeyLibrary.Clear();
-
-        Dispose();
     }
 
     protected override void ReleaseManagedMenory()

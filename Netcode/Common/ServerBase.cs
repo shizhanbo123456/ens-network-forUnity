@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class ServerBase : Disposable
 {
-    public Dictionary<int, EnsConnection> ClientConnections = new Dictionary<int, EnsConnection>();
-    public EnsRoomManager RoomManager;
+    internal Dictionary<int, EnsConnection> ClientConnections = new Dictionary<int, EnsConnection>();
+    internal EnsRoomManager RoomManager;
     internal ListenerBase Listener;
 
     public bool On;

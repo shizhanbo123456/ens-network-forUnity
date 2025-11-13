@@ -4,11 +4,11 @@ using UnityEngine;
 /// 在调用StartHost时由ENCHost创建
 /// 函数调用规则与ENCClient一致
 /// </summary>
-public class ENCLocalClient : EnsClient
+internal class ENCLocalClient : EnsClient
 {
     internal CircularQueue<string> ReceivedData = new CircularQueue<string>();
     private bool _on = true;
-    public override bool On()
+    internal override bool On()
     {
         return _on;
     }
@@ -16,7 +16,7 @@ public class ENCLocalClient : EnsClient
     {
         if (EnsInstance.DevelopmentDebug) Debug.Log("[E]本地客户端(ENCLocalClient)已启动");
     }
-    public override void SendData(string data)
+    internal override void SendData(string data)
     {
         EnsInstance.Corr.Host.ReceivedData.Write(data);
     }
@@ -34,7 +34,7 @@ public class ENCLocalClient : EnsClient
             }
         }
     }
-    public override void ShutDown()
+    internal override void ShutDown()
     {
         ReceivedData = null;
         _on = false;

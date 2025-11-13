@@ -5,17 +5,8 @@ using System.Linq;
 using System.Net;
 using UnityEngine;
 
-/// <summary>
-/// SRC框架用于实现远程服务器的交互和房间管理<br></br>
-/// 对于SRC层，加入时不会获取id或调用ENC事件(仅仅触发SRC事件)，而是加入房间时获取房间内id并触发ENC事件<br></br>
-/// 连接成功和加入房间(分配id)之间只会发送请求信息<br></br>
-/// ENC层的服务器相当于SRC层的房间<br></br>
-/// 连接时，先触发SRC连接，加入房间后，先分配id(房间和客户端的，防bug)，再促发ENC连接和Id分配<br></br>
-/// 断开时如果退出了房间则触发ENC断开，之后触发SRC断开
-/// </summary>
 public class EnsCorrespondent :MonoBehaviour
 {
-    [Header("ENC")]
     public string IP = "127.0.0.1";
     public int Port = 65432;
     public enum NetworkMode
@@ -46,15 +37,10 @@ public class EnsCorrespondent :MonoBehaviour
     /// </summary>
     public float HeartbeatMsgInterval = 0.2f;
 
-    [Space]
-    public bool LogOnAllocateId = false;
-    public bool LogOnAutoAssignedId = true;
-    public bool LogOnManualAssignedId = true;
 
-
-    public EnsServer Server;
-    public EnsClient Client;
-    public EnsHost Host;
+    internal EnsServer Server;
+    internal EnsClient Client;
+    internal EnsHost Host;
 
     protected virtual void OnValidate()
     {
@@ -79,10 +65,6 @@ public class EnsCorrespondent :MonoBehaviour
         ProtocolWrapper.Protocol.mode = recvMode;
         ProtocolWrapper.Protocol.type = protocolType;
         ProtocolWrapper.Protocol.DevelopmentDebug = DevelopmentDebug;
-
-        EnsInstance.LogOnAllocateId = LogOnAllocateId;
-        EnsInstance.LogOnAutoAssignedId = LogOnAutoAssignedId;
-        EnsInstance.LogOnManualAssignedId = LogOnManualAssignedId;
 
         EnsEventRegister.RegistUnity();
     }
@@ -238,10 +220,9 @@ public class EnsCorrespondent :MonoBehaviour
 
     public virtual void ShutDown()
     {
-        //关闭后访问器会返回null
         try
         {
-            if (networkMode != NetworkMode.None&&EnsInstance.ClientConnectRejected)
+            if (EnsInstance.ClientConnectRejected)
             {
                 EnsInstance.OnConnectionRejected?.Invoke();
                 EnsInstance.ClientConnectRejected = false;

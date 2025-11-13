@@ -1,15 +1,89 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Utils;
 
 public static class Format
 {
     private const char BoundaryStart = '{';
     private const char BoundaryEnd = '}';
-    private const char Separator = '*';
-    private const char TargetSeparator = '/';
-    public static List<string> SplitWithBoundaries(string s, char separator=Separator, char boundaryStart=BoundaryStart, char boundaryEnd=BoundaryEnd)
+    private const char ListSeparator = '/';
+    private const char DictionaryPair = ':';
+    private const char DictionarySeparator = ',';
+
+    public static string DictionaryToString<Tkey,Tvalue>(Dictionary<Tkey,Tvalue>dict,
+        char pair=DictionaryPair,char separator=DictionarySeparator,bool addboundary=true,
+        Func<Tkey,string> keyconverter=null,Func<Tvalue,string>valueconverter=null)
+    {
+        StringBuilder sb = new StringBuilder();
+        if (keyconverter == null) keyconverter = t => t.ToString();
+        if(valueconverter == null) valueconverter = t => t.ToString();
+
+        bool first = true;
+        if (addboundary)
+        {
+            foreach (var i in dict)
+            {
+                if (first) first = false;
+                else sb.Append(pair);
+                sb.Append(BoundaryStart + keyconverter.Invoke(i.Key) + BoundaryEnd+pair+BoundaryStart + valueconverter.Invoke(i.Value) +BoundaryEnd);
+            }
+        }
+        else
+        {
+            foreach (var i in dict)
+            {
+                if (first) first = false;
+                else sb.Append(pair);
+                sb.Append(i.Key.ToString() + separator + i.Value.ToString());
+            }
+        }
+        return sb.ToString();
+    }
+    public static Dictionary<Tkey, Tvalue> StringToDictionary<Tkey, Tvalue>(string data, Func<string, Tkey> keyconverter, Func<string, Tvalue> valueconverter, char pair = DictionaryPair, char separator = DictionarySeparator, bool removeboudary = true)
+    {
+        Dictionary<Tkey, Tvalue> r = new Dictionary<Tkey, Tvalue>();
+        var s = data.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+        if (removeboudary)
+        {
+            foreach (var i in s)
+            {
+                var list = SplitWithBoundaries(i, pair);
+                r.Add(keyconverter.Invoke(list[0]), valueconverter.Invoke(list[1]));
+            }
+        }
+        else
+        {
+            foreach (var i in s)
+            {
+                var list = i.Split(pair);
+                r.Add(keyconverter.Invoke(list[0]), valueconverter.Invoke(list[1]));
+            }
+        }
+        return r;
+    }
+
+    public static string ListToString<T>(IEnumerable<T> list, char c = ListSeparator)
+    {
+        StringBuilder sb= new StringBuilder();
+        bool isfirst = true;
+        foreach(var i in list)
+        {
+            if(isfirst)isfirst= false;
+            else sb.Append(ListSeparator);
+            sb.Append(i.ToString());
+        }
+        return sb.ToString();
+    }
+    public static List<T> StringToList<T>(string a,Func<string,T>converter, char c = ListSeparator)
+    {
+        string[] s = a.Split(c, StringSplitOptions.RemoveEmptyEntries);
+        List<T> list = new List<T>();
+        foreach (var i in s) list.Add(converter.Invoke(i));
+        return list;
+    }
+
+
+    public static List<string> SplitWithBoundaries(string s, char separator = ListSeparator, char boundaryStart = BoundaryStart, char boundaryEnd = BoundaryEnd)
     {
         List<string> result = new List<string>();
         int currentStart = 0;
@@ -65,127 +139,5 @@ public static class Format
             return segment.Substring(1, segment.Length - 2);
         }
         return segment;
-    }
-
-    public static string DictionaryToString(Dictionary<string,string>dict)
-    {
-        StringBuilder sb = new StringBuilder();
-
-        bool first = true;
-        foreach (var i in dict)
-        {
-            if (first) first = false;
-            else sb.Append(',');
-            sb.Append("{" + i.Key + "}:{" + i.Value + "}");
-        }
-        return sb.ToString();
-    }
-    public static Dictionary<string, string> StringToDictionary(string data)
-    {
-        Dictionary<string, string> r = new Dictionary<string, string>();
-        var s=data.Split(',', StringSplitOptions.RemoveEmptyEntries);
-        foreach(var i in s)
-        {
-            var list=SplitWithBoundaries(i, ':');
-            r.Add(list[0], list[1]);
-        }
-        return r;
-    }
-
-    public static string ListToString(List<int> list, char c=TargetSeparator)
-    {
-        if (list == null || list.Count == 0)
-        {
-            Debug.LogWarning("空列表");
-            return "";
-        }
-        string a = list[0].ToString();
-        string cs = c.ToString();
-        int i = 1;
-        while (i < list.Count)
-        {
-            a += cs + list[i];
-            i++;
-        }
-        return a;
-    }
-    public static List<int> StringToList(string a, char c=TargetSeparator)
-    {
-        string[] s = a.Split(c, StringSplitOptions.RemoveEmptyEntries);
-        List<int> list = new List<int>();
-        foreach (var i in s)
-        {
-            list.Add(int.Parse(i));
-        }
-        return list;
-    }
-
-
-    //Wrapper
-    public static string Combine(CircularQueue<string> origin)
-    {
-        if (origin.Empty())
-        {
-            Debug.Log("传入了空的原始数据");
-            return null;
-        }
-        var result = new StringBuilder();
-        bool isFirst = true;
-        int length = 0;
-        while (!origin.Empty())
-        {
-            if (!isFirst) result.Append(Separator);
-            else isFirst = false;
-
-            origin.Read(out string item);
-            result.Append(item);
-            length = item.Length;
-            if (length > 1400)
-            {
-                Debug.LogError("检查到过长的数据 " + result.ToString());
-                break;
-            }
-        }
-
-        return result.ToString();
-    }
-    public static string[] Split(string origin)
-    {
-        return origin.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
-    }
-
-
-    //Wrappper
-    public static string EnFormat(string s)
-    {
-        return Separator + s + Separator;
-    }
-    public static string DeFormat(string s, out bool rightFormat)
-    {
-        rightFormat = false;
-        if (string.IsNullOrEmpty(s)) return null;
-
-        int firstSeparatorIndex = s.IndexOf(Separator);
-        int lastSeparatorIndex = s.LastIndexOf(Separator);
-
-        if (firstSeparatorIndex == -1 || lastSeparatorIndex == -1 || firstSeparatorIndex >= lastSeparatorIndex) return null;
-
-        rightFormat = true;
-        int length = lastSeparatorIndex - firstSeparatorIndex - 1;
-        return s.Substring(firstSeparatorIndex + 1, length);
-    }
-
-    //Wrapper
-    public static byte[] GetBytes(string s)
-    {
-        return Encoding.UTF8.GetBytes(s);
-    }
-    public static string GetString(byte[] b)
-    {
-        return Encoding.UTF8.GetString(b);
-    }
-    public static string GetString(byte[] b, int start, int length)
-    {
-        return Encoding.UTF8.GetString(b, start, length);
     }
 }

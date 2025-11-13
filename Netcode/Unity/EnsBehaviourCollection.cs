@@ -26,7 +26,6 @@ public class EnsBehaviourCollection : MonoBehaviour
             Behaviors[i].ObjectId=idstart;
             Behaviors[i].internalAllocateId = true;
             idstart++;
-            if (EnsInstance.LogOnAllocateId) Debug.Log("[N]∑÷≈‰‘§÷∆ÃÂId" + Behaviors[i].ObjectId);
             EnsNetworkObjectManager.AddObject(Behaviors[i]);
         }
     }

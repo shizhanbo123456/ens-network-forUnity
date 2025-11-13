@@ -30,6 +30,9 @@ namespace ProtocolWrapper
         private static UdpClient receiverClient;
         private static IPEndPoint broadcastEndPoint;
 
+        public static bool Sending => senderClient != null;
+        public static bool Receiving=>receiverClient != null;
+
         public static bool StartBroadcast(int port)
         {
             if (senderClient != null)
@@ -53,7 +56,7 @@ namespace ProtocolWrapper
             if (!reachTime.Reached) return;
             reachTime.ReachAfter(broadcastInterval);
 
-            var s=','+Format.DictionaryToString(BroadcastContent)+',';
+            var s=','+global::Format.DictionaryToString(BroadcastContent)+',';
 
             try
             {
@@ -157,7 +160,7 @@ namespace ProtocolWrapper
 
         private static void HandleReceivedMesg(string mesg)
         {
-            var keyValue = Format.SplitWithBoundaries(mesg,':');
+            var keyValue = global::Format.SplitWithBoundaries(mesg,':');
             if (keyValue.Count != 2) return;
 
             string header = keyValue[0];

@@ -2,6 +2,7 @@ using ProtocolWrapper;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using request = Ens.Request;
 internal class EnsEventRegister
 {
     private static EnsCorrespondent Corr
@@ -18,6 +19,7 @@ internal class EnsEventRegister
         Server_f();
         Server_Q();
         Server_Any();
+        RegistServerRequests();
 
         Client_C();
         Client_E();
@@ -30,6 +32,7 @@ internal class EnsEventRegister
         Client_f();
         Client_Q();
         Client_Any();
+        RegistClientRequests();
 
         ForceInvokeOnce_Server();
         ForceInvokeOnce_Room();
@@ -44,6 +47,25 @@ internal class EnsEventRegister
         Server_f();
         Server_Q();
         Server_Any();
+        RegistServerRequests();
+    }
+    private static void RegistServerRequests()
+    {
+        EnsServerRequest.RegistRequest(new request.Server.CreateRoom());
+        EnsServerRequest.RegistRequest(new request.Server.SetRule());
+        EnsServerRequest.RegistRequest(new request.Server.JoinRoom());
+        EnsServerRequest.RegistRequest(new request.Server.GetRule());
+        EnsServerRequest.RegistRequest(new request.Server.ExitRoom());
+        EnsServerRequest.RegistRequest(new request.Server.GetRoomList());
+    }
+    private static void RegistClientRequests()
+    {
+        EnsClientRequest.RegistRequest(new request.Client.CreateRoom());
+        EnsClientRequest.RegistRequest(new request.Client.SetRule());
+        EnsClientRequest.RegistRequest(new request.Client.JoinRoom());
+        EnsClientRequest.RegistRequest(new request.Client.GetRule());
+        EnsClientRequest.RegistRequest(new request.Client.ExitRoom());
+        EnsClientRequest.RegistRequest(new request.Client.GetRoomList());
     }
     protected static void Server_Any()
     {
@@ -178,7 +200,7 @@ internal class EnsEventRegister
                 }
                 else
                 {
-                    connection.room.PTP(data, Format.StringToList(target));
+                    connection.room.PTP(data, Format.StringToList(target,int.Parse));
                 }
             }
         };
@@ -234,7 +256,7 @@ internal class EnsEventRegister
                 }
                 else
                 {
-                    var targets = Format.StringToList(target);
+                    var targets = Format.StringToList(target, int.Parse);
                     foreach (var i in Corr.Server.ClientConnections.Values)
                     {
                         if (targets.Contains(i.ClientId))
@@ -289,7 +311,7 @@ internal class EnsEventRegister
                 }
                 else
                 {
-                    connection.room.PTP(data, Format.StringToList(target));
+                    connection.room.PTP(data, Format.StringToList(target, int.Parse));
                 }
             }
         };
@@ -330,7 +352,7 @@ internal class EnsEventRegister
             if (data[1] == 'Q')
             {
                 var s = Format.SplitWithBoundaries(data.Substring(3, data.Length - 3), '#');
-                EnsClientRequst.RecvReply(s[0], s[1]);
+                EnsClientRequest.RecvReply(s[0], s[1]);
             }
         };
     }
@@ -372,16 +394,16 @@ internal class EnsEventRegister
     }
 
 
-    public static void LoopCommon()
+    internal static void LoopCommon()
     {
         Utils.Time.Update();
     }
-    public static void LoopClient()
+    internal static void LoopClient()
     {
         Broadcast.Update();
-        EnsClientRequst.Update();
+        EnsClientRequest.Update();
     }
-    public static void LoopServer()
+    internal static void LoopServer()
     {
 
     }

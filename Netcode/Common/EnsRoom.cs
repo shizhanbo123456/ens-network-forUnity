@@ -2,15 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
 
-public class EnsRoom:Disposable
+internal class EnsRoom:Disposable
 {
     private Dictionary<int,EnsConnection> ClientConnections =new Dictionary<int, EnsConnection>();
-    public int RoomId;
-    public int CurrentAuthorityAt = -1;
+    internal int RoomId;
+    internal int CurrentAuthorityAt = -1;
 
-    public Dictionary<string, (char, string)> Rule = new Dictionary<string, (char, string)>();
+    public Dictionary<string, (char, int)> Rule = new Dictionary<string, (char, int)>();
 
     // >0为游戏过程中制造的物体的Id
     private int createdid = 1;
@@ -27,19 +26,19 @@ public class EnsRoom:Disposable
     }
 
     private EnsRoom() { }
-    public EnsRoom(int id)
+    internal EnsRoom(int id)
     {
         RoomId = id;
     }
 
-    public void Join(EnsConnection conn)
+    internal void Join(EnsConnection conn)
     {
         ClientConnections.Add(conn.ClientId,conn);
         conn.room = this;
         Broadcast(Header.kE+"1#" + conn.ClientId, conn.ClientId);
         if (CurrentAuthorityAt == -1) SetAuthority(conn.ClientId);
     }
-    public bool Exit(EnsConnection conn)
+    internal bool Exit(EnsConnection conn)
     {
         ClientConnections.Remove(conn.ClientId);
         conn.room = null;
@@ -62,7 +61,7 @@ public class EnsRoom:Disposable
             return true;
         }
     }
-    public void SetAuthority(int clientId)
+    internal void SetAuthority(int clientId)
     {
         if (!ClientConnections.ContainsKey(CurrentAuthorityAt)) return;
         if (ClientConnections.ContainsKey(CurrentAuthorityAt))
@@ -73,24 +72,24 @@ public class EnsRoom:Disposable
         ClientConnections[CurrentAuthorityAt].SendData(Header.kA+"1");
     }
 
-    public void Broadcast(string data)
+    internal void Broadcast(string data)
     {
         foreach (var i in ClientConnections.Values) i.SendData(data);
     }
-    public void Broadcast(string data, int self)
+    internal void Broadcast(string data, int self)
     {
         foreach (var i in ClientConnections.Values) if (i.ClientId != self) i.SendData(data);
     }
-    public void PTP(string data, int id)
+    internal void PTP(string data, int id)
     {
         foreach (var i in ClientConnections.Values) if (id == i.ClientId) i.SendData(data);
     }
-    public void PTP(string data, List<int> id)
+    internal void PTP(string data, List<int> id)
     {
         foreach (var i in ClientConnections.Values) if (id.Contains(i.ClientId)) i.SendData(data);
     }
 
-    public void ShutDown()
+    internal void ShutDown()
     {
         EnsRoomManager.Instance.rooms.Remove(RoomId);
         Dispose();

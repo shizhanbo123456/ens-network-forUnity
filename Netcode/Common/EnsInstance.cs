@@ -1,3 +1,4 @@
+using Ens.Request.Client;
 using System;
 using System.Collections.Generic;
 
@@ -11,10 +12,6 @@ public class EnsInstance
     public static bool DevelopmentDebug;
     public static bool ShowGeneralEvent;
 
-    public static bool LogOnAllocateId = false;
-    public static bool LogOnAutoAssignedId = true;
-    public static bool LogOnManualAssignedId = true;
-
     public static float DisconnectThreshold = 3f;// 上次接收心跳检测时间超过此阈值会认为断开了连接
     public static float HeartbeatMsgInterval = 0.2f;// 发送心跳检测消息的间隔
 
@@ -25,24 +22,11 @@ public class EnsInstance
     public static Action OnConnectionRejected;
     public static Action<int> OnServerConnect;
     public static Action OnServerDisconnect;
-
-    public static Action OnSetRomeRuleSucceed;
-    public static Action OnJoinRoom;//创建或加入时调用
-    public static Action OnExitRoom;
-    public static Action<int> OnClientEnter;//有新用户连接到服务器时触发(新用户自身不调用)              ENCConnection连接后向其它连接发送
-    public static Action<int> OnClientExit;//有用户与服务器断开时调用(断开的用户自身不调用)         ENCHeartBeat的ServerSRHB广播
+    public static Action<int> OnClientEnter;//有新用户连接到服务器时触发(新用户自身不调用)
+    public static Action<int> OnClientExit;//有用户与服务器断开时调用(断开的用户自身不调用)
     public static Action<bool> OnAuthorityChanged;
-    public static Action OnJoinFailedByLocked;
-    public static Action OnJoinFailedByInfoLack;
-    public static Action<List<string>> OnJoinFailedByNotMatched;
-    public static Action OnRoomNotFound;
-    public static Action<List<string>> OnGetRoomRule;
 
-    public static Action OnCreateRoomTimeOut;
-    public static Action OnSetRoomRuleTimeOut;
-    public static Action OnJoinRoomTimeOut;
-    public static Action OnGetRoomRuleTimeOut;
-    public static Action OnExitRoomTimeOut;
+    public static Action OnCreateRoom => CreateRoom.OnCreateRoom;
 
 
     //确保断开连接事件只会触发一次(避免多次调用ShutDown)
@@ -52,8 +36,8 @@ public class EnsInstance
     internal static bool ClientConnectRejected = false;
 
 
-    public static Action<string, EnsConnection> ServerRecvData;
-    public static Action<string> ClientRecvData;
+    internal static Action<string, EnsConnection> ServerRecvData;
+    internal static Action<string> ClientRecvData;
 
     public static int LocalClientId = -1;
     public static int PresentRoomId = 0;

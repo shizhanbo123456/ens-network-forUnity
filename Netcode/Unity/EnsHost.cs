@@ -6,12 +6,12 @@ using UnityEngine;
 /// 用于在服务器端也启动一个客户端<br></br>
 /// 函数调用规则与ENCConnection一致
 /// </summary>
-public class EnsHost : EnsConnection
+internal class EnsHost : EnsConnection
 {
     internal CircularQueue<string> ReceivedData = new CircularQueue<string>();
     private ENCLocalClient _client;
     private bool _on;
-    public override bool On()
+    internal override bool On()
     {
         return _on;
     }
@@ -36,7 +36,7 @@ public class EnsHost : EnsConnection
         EnsInstance.LocalClientId = ClientId;
         _on = true;
     }
-    public override void SendData(string data)
+    internal override void SendData(string data)
     {
         _client.ReceivedData.Write(data);
     }
@@ -54,7 +54,7 @@ public class EnsHost : EnsConnection
             }
         }
     }
-    public override void ShutDown()
+    internal override void ShutDown()
     {
         _client.ShutDown();
         _on = false;

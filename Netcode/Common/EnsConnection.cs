@@ -5,19 +5,19 @@ using UnityEngine;
 /// <summary>
 /// 服务器使用，用于简化和客户端的通信
 /// </summary>
-public class EnsConnection:SR
+internal class EnsConnection:SR
 {
-    public int ClientId;
-    protected KeyLibrary KeyLibrary;
+    internal int ClientId;
+    private KeyLibrary KeyLibrary;
     internal ProtocolBase Connection;
-    public EnsRoom room;
+    internal EnsRoom room;
 
-    public Action<EnsConnection> OnShutDown;
+    internal Action<EnsConnection> OnShutDown;
 
-    public int delay = 20;//20ms
+    internal int delay = 20;//20ms
 
 
-    public override bool On()
+    internal override bool On()
     {
         if (Connection == null) return false;
         return Connection.On;
@@ -33,7 +33,7 @@ public class EnsConnection:SR
 
         SendData(Header.kC + ClientId);
     }
-    public override void SendData(string data)
+    internal override void SendData(string data)
     {
         if (data[0] == 'k' || data[0]=='K') KeyLibrary.Add(data);
         else Connection.SendData(data);
@@ -62,7 +62,7 @@ public class EnsConnection:SR
             }
         }
     }
-    public override void ShutDown()
+    internal override void ShutDown()
     {
         if (Connection==null||Connection.Cancelled) return;
         OnShutDown?.Invoke(this);

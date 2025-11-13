@@ -1,19 +1,20 @@
+using Ens.Request;
 using System;
 using System.Collections.Generic;
 
-public static class EnsServerRequest
+internal static class EnsServerRequest
 {
-    private static Dictionary<string,Func<EnsConnection, string,string>> Actions= new Dictionary<string,Func<EnsConnection, string,string>>();
-    public static void RegistRequestHeader(string header,Func<EnsConnection,string,string>callback)
+    private static Dictionary<string,RequestServer> Requests=new Dictionary<string,RequestServer>();
+    internal static void RegistRequest(RequestServer request)
     {
-        if (Actions.ContainsKey(header)) Actions[header] = callback;
-        else Utils.Debug.LogError(header + "已经注册了事件");
+        if (!Requests.ContainsKey(request.Header)) Requests.Add(request.Header, request);
+        else Utils.Debug.LogError("已经注册了事件"+ request.Header);
     }
-    public static string OnRecvRequest(string header,string content,EnsConnection conn)
+    internal static string OnRecvRequest(string header,string content,EnsConnection conn)
     {
-        if (Actions.ContainsKey(header))
+        if (Requests.ContainsKey(header))
         {
-            return Actions[header].Invoke(conn, content);
+            return Requests[header].HandleRequest(conn, content);
         }
         else
         {
