@@ -8,7 +8,7 @@ namespace Ens.Request
     {
         public class JoinRoom : RequestClient
         {
-            internal override string Header => "R2";
+            protected internal override string Header => "R2";
 
             public static Action OnRecvReply;
             public static Action OnTimeOut;
@@ -34,7 +34,7 @@ namespace Ens.Request
                 EnsInstance.PresentRoomId=int.Parse(data);
                 OnRecvReply?.Invoke();
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -44,8 +44,8 @@ namespace Ens.Request
     {
         internal class JoinRoom : RequestServer
         {
-            internal override string Header => "R2";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R2";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 if (conn.room != null) return ThrowError(1);
                 int id = int.Parse(data);

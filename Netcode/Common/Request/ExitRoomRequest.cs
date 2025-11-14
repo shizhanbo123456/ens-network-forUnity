@@ -6,7 +6,7 @@ namespace Ens.Request
     {
         public class ExitRoom : RequestClient
         {
-            internal override string Header => "R4";
+            protected internal override string Header => "R4";
 
             public static Action OnRecvReply;
             public static Action OnTimeOut;
@@ -30,7 +30,7 @@ namespace Ens.Request
                 EnsInstance.PresentRoomId = 0;
                 OnRecvReply?.Invoke();
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -40,8 +40,8 @@ namespace Ens.Request
     {
         internal class ExitRoom : RequestServer
         {
-            internal override string Header => "R4";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R4";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 var b=EnsRoomManager.Instance.ExitRoom(conn, out int code);
                 if(b)return "empty";

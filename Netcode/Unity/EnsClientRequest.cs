@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using Utils;
 
-internal static class EnsClientRequest
+public static class EnsClientRequest
 {
     private static Dictionary<string, RequestClient> Requests=new Dictionary<string, RequestClient>();
 
     private static Dictionary<string,float>ActiveRequestHeader = new Dictionary<string, float>();
 
-    internal static void RegistRequest(RequestClient request)
+    public static void RegistRequest(RequestClient request)
     {
         string key = request.GetType().ToString();
         if (Requests.ContainsKey(key))

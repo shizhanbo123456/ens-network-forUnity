@@ -9,7 +9,7 @@ namespace Ens.Request
     {
         public class GetRoomList : RequestClient
         {
-            internal override string Header => "R5";
+            protected internal override string Header => "R5";
 
             public static Action<int,List<int>> OnRecvReply;
             public static Action OnTimeOut;
@@ -34,7 +34,7 @@ namespace Ens.Request
                 List.RemoveAt(0);
                 OnRecvReply?.Invoke(count,List);
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -44,8 +44,8 @@ namespace Ens.Request
     {
         internal class GetRoomList : RequestServer
         {
-            internal override string Header => "R5";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R5";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 List<int>r=new List<int>();
                 var rooms = EnsRoomManager.Instance.rooms.Keys.ToList();

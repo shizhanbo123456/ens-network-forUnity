@@ -6,7 +6,7 @@ namespace Ens.Request
     {
         public class SetRule : RequestClient
         {
-            internal override string Header => "R1";
+            protected internal override string Header => "R1";
 
             public static Action OnRecvReply;
             public static Action OnTimeOut;
@@ -29,7 +29,7 @@ namespace Ens.Request
             {
                 OnRecvReply?.Invoke();
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -39,8 +39,8 @@ namespace Ens.Request
     {
         internal class SetRule : RequestServer
         {
-            internal override string Header => "R1";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R1";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 string[] s=null;
                 char c = '1';

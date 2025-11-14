@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 服务器使用，用于简化和客户端的通信
 /// </summary>
-internal class EnsConnection:SR
+public class EnsConnection:SR
 {
     internal int ClientId;
     private KeyLibrary KeyLibrary;

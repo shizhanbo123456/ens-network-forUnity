@@ -6,7 +6,7 @@ namespace Ens.Request
     {
         public class CreateRoom:RequestClient
         {
-            internal override string Header => "R0";
+            protected internal override string Header => "R0";
 
             public static Action OnCreateRoom;
             public static Action OnTimeOut;
@@ -30,7 +30,7 @@ namespace Ens.Request
                 EnsInstance.PresentRoomId = int.Parse(data);
                 OnCreateRoom?.Invoke();
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -40,8 +40,8 @@ namespace Ens.Request
     {
         internal class CreateRoom:RequestServer
         {
-            internal override string Header => "R0";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R0";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 var b = EnsRoomManager.Instance.CreateRoom(conn, out int code);
                 if (b) return code.ToString();

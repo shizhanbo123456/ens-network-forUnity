@@ -4,7 +4,7 @@ namespace Ens.Request
 {
     public abstract class RequestClient
     {
-        internal abstract string Header { get; }
+        protected internal abstract string Header { get; }
         protected void SendRequest(string content)
         {
             EnsClientRequest.SendRequest(Header, content);
@@ -22,7 +22,7 @@ namespace Ens.Request
         }
         protected abstract void Error(int code,string data);
         protected abstract void HandleReply(string data);
-        internal abstract void TimeOut();
+        protected internal abstract void TimeOut();
         protected static bool Error(string data, out int errorCode,out string content)
         {
             if (data.StartsWith("error"))
@@ -46,10 +46,10 @@ namespace Ens.Request
             return false;
         }
     }
-    internal abstract class RequestServer
+    public abstract class RequestServer
     {
-        internal abstract string Header { get; }
-        internal abstract string HandleRequest(EnsConnection conn,string data);
+        protected internal abstract string Header { get; }
+        protected internal abstract string HandleRequest(EnsConnection conn,string data);
         protected static string ThrowError(int code)
         {
             return "error" + code;

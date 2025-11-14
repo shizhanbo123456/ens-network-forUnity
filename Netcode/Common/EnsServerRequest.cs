@@ -2,10 +2,10 @@ using Ens.Request;
 using System;
 using System.Collections.Generic;
 
-internal static class EnsServerRequest
+public static class EnsServerRequest
 {
     private static Dictionary<string,RequestServer> Requests=new Dictionary<string,RequestServer>();
-    internal static void RegistRequest(RequestServer request)
+    public static void RegistRequest(RequestServer request)
     {
         if (!Requests.ContainsKey(request.Header)) Requests.Add(request.Header, request);
         else Utils.Debug.LogError("已经注册了事件"+ request.Header);

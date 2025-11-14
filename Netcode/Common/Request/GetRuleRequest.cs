@@ -7,7 +7,7 @@ namespace Ens.Request
     {
         public class GetRule : RequestClient
         {
-            internal override string Header => "R3";
+            protected internal override string Header => "R3";
 
             public static Action<Dictionary<string,(char,int)>> OnRecvReply;
             public static Action OnTimeOut;
@@ -31,7 +31,7 @@ namespace Ens.Request
                 var d=Format.StringToDictionary(data, s => s, valueconverter: t => (t[0], int.Parse(t.Substring(1, t.Length - 1))));
                 OnRecvReply?.Invoke(d);
             }
-            internal override void TimeOut()
+            protected internal override void TimeOut()
             {
                 OnTimeOut?.Invoke();
             }
@@ -41,8 +41,8 @@ namespace Ens.Request
     {
         internal class GetRule : RequestServer
         {
-            internal override string Header => "R3";
-            internal override string HandleRequest(EnsConnection conn, string data)
+            protected internal override string Header => "R3";
+            protected internal override string HandleRequest(EnsConnection conn, string data)
             {
                 if(EnsRoomManager.Instance.rooms.TryGetValue(int.Parse(data), out var room))
                 {
