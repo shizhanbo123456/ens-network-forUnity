@@ -45,7 +45,12 @@ public class EnsRoom:Disposable
         ClientConnections.Add(conn.ClientId,conn);
         conn.room = this;
         Broadcast(Header.kE+"1#" + conn.ClientId, conn.ClientId);
-        if (CurrentAuthorityAt == -1) SetAuthority(conn.ClientId);
+        if (CurrentAuthorityAt == -1)
+        {
+            CurrentAuthorityAt = conn.ClientId;
+            conn.SendData(Header.kA + "1");
+        }
+        else conn.SendData(Header.kA + "0");
     }
     internal bool Exit(EnsConnection conn)
     {

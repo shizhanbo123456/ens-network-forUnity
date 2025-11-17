@@ -26,6 +26,12 @@ public abstract class EnsBehaviour : MonoBehaviour
         {KeyFormatType.Nonsequential,Header.kF },
         {KeyFormatType.Timewise,Header.KF }
     };
+    public enum SendTo
+    {
+        Everyone=-1,
+        ExcludeSender=-2,
+        RoomOwner=-3
+    }
 
     internal bool internalAllocateId=false;
     private bool startInvoked=false;
@@ -72,7 +78,7 @@ public abstract class EnsBehaviour : MonoBehaviour
     }
     public void DestroyRpc(KeyFormatType keyFormatType=KeyFormatType.Nonsequential)
     {
-        CallFuncRpc(nameof(DestroyLocal), -1, keyFormatType);
+        CallFuncRpc(nameof(DestroyLocal), SendTo.Everyone, keyFormatType);
     }
     public void DestroyLocal()
     {
@@ -108,22 +114,14 @@ public abstract class EnsBehaviour : MonoBehaviour
 
     }
 
-    public void CallFuncRpc(string func, int mode, KeyFormatType type=KeyFormatType.None )
+    public void CallFuncRpc(string func, SendTo mode, KeyFormatType type=KeyFormatType.None )
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
         if (EnsInstance.Corr.networkMode == EnsCorrespondent.NetworkMode.None)
         {
-            if (mode != -2) StartCoroutine(func);
+            if (mode != SendTo.ExcludeSender) StartCoroutine(func);
             return;
         }
-        EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + mode);
+        EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + (int)mode);
     }
     public void CallFuncRpc(string func,List<int> targets, KeyFormatType type = KeyFormatType.None)
     {
@@ -134,22 +132,14 @@ public abstract class EnsBehaviour : MonoBehaviour
         }
         EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + Format.ListToString(targets));
     }
-    public void CallFuncRpc(string func, int mode,string param, KeyFormatType type = KeyFormatType.None)
+    public void CallFuncRpc(string func, SendTo mode,string param, KeyFormatType type = KeyFormatType.None)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
         if (EnsInstance.Corr.networkMode == EnsCorrespondent.NetworkMode.None)
         {
-            if (mode != -2) StartCoroutine(func,param);
+            if (mode != SendTo.ExcludeSender) StartCoroutine(func,param);
             return;
         }
-        EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + mode + "#{" + param+'}');
+        EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + (int)mode + "#{" + param+'}');
     }
     public void CallFuncRpc(string func, List<int> targets,string param, KeyFormatType type = KeyFormatType.None)
     {
@@ -160,22 +150,14 @@ public abstract class EnsBehaviour : MonoBehaviour
         }
         EnsInstance.Corr.Client.SendData(Key2Header[type] + ObjectId.ToString() + "#{" + func + "}#" + Format.ListToString(targets) + "#{" + param+'}');
     }
-    public void CallFuncRpc(string func, int mode, int delay)
+    public void CallFuncRpc(string func, SendTo mode, int delay)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
         if (EnsInstance.Corr.networkMode == EnsCorrespondent.NetworkMode.None)
         {
-            if (mode != -2) StartCoroutine(func);
+            if (mode != SendTo.ExcludeSender) StartCoroutine(func);
             return;
         }
-        EnsInstance.Corr.Client.SendData(Header.kS + ObjectId.ToString() + "#{" + func+ "}#" + mode + "#" + delay);
+        EnsInstance.Corr.Client.SendData(Header.kS + ObjectId.ToString() + "#{" + func+ "}#" + (int)mode + "#" + delay);
     }
     public void CallFuncRpc(string func, List<int> targets, int delay)
     {
@@ -186,22 +168,14 @@ public abstract class EnsBehaviour : MonoBehaviour
         }
         EnsInstance.Corr.Client.SendData(Header.kS + ObjectId.ToString() + "#{" + func + "}#" + Format.ListToString(targets) + "#" + delay);
     }
-    public void CallFuncRpc(string func, int mode, string param, int delay)
+    public void CallFuncRpc(string func, SendTo mode, string param, int delay)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
         if (EnsInstance.Corr.networkMode == EnsCorrespondent.NetworkMode.None)
         {
-            if (mode != -2) StartCoroutine(func, param);
+            if (mode != SendTo.ExcludeSender) StartCoroutine(func, param);
             return;
         }
-        EnsInstance.Corr.Client.SendData(Header.kS + ObjectId.ToString() + "#{" + func + "}#" + mode + "#" + delay + "#{" + param+'}');
+        EnsInstance.Corr.Client.SendData(Header.kS + ObjectId.ToString() + "#{" + func + "}#" + (int)mode + "#" + delay + "#{" + param+'}');
     }
     public void CallFuncRpc(string func, List<int> targets, string param, int delay)
     {

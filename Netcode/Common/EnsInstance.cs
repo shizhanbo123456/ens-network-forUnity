@@ -24,7 +24,7 @@ public class EnsInstance
     public static Action OnServerDisconnect;
     public static Action<int> OnClientEnter;//有新用户连接到服务器时触发(新用户自身不调用)
     public static Action<int> OnClientExit;//有用户与服务器断开时调用(断开的用户自身不调用)
-    public static Action<bool> OnAuthorityChanged;
+    public static Action OnAuthorityChanged;
 
     public static Action OnCreateRoom { get => CreateRoom.OnCreateRoom; set=>CreateRoom.OnCreateRoom+=value; }
     public static Action SetRuleSucceed { get => SetRule.OnRecvReply; set => SetRule.OnRecvReply += value; }

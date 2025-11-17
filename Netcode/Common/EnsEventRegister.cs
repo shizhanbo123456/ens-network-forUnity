@@ -178,7 +178,8 @@ public class EnsEventRegister
             if (data[1] == 'A')
             {
                 int d = int.Parse(data.Substring(3, data.Length - 3));
-                EnsInstance.OnAuthorityChanged?.Invoke(d == 1);
+                EnsInstance.HasAuthority = d == 1;
+                EnsInstance.OnAuthorityChanged?.Invoke();
             }
         };
     }
@@ -200,6 +201,10 @@ public class EnsEventRegister
                     else if (target[1] == '2')//忽略自身
                     {
                         connection.room.Broadcast(data, connection.ClientId);
+                    }
+                    else if (target[1] == '3')//权限所在
+                    {
+                        connection.room.PTP(data, connection.room.CurrentAuthorityAt);
                     }
                 }
                 else

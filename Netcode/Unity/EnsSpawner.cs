@@ -193,7 +193,7 @@ public sealed class EnsSpawner : EnsBehaviour
     /// </summary>
     public void RespawnCheckServerRpc(EnsBehaviourCollection collection, string param, KeyFormatType type = KeyFormatType.None)
     {
-        CallFuncRpc(nameof(RespawnCheckLocal), -1, collection.NOMCollectionId + "%" + collection.Behaviors[0].ObjectId
+        CallFuncRpc(nameof(RespawnCheckLocal), SendTo.Everyone, collection.NOMCollectionId + "%" + collection.Behaviors[0].ObjectId
             + '%' + param + "%" + collection.Behaviors[0].ObjectId,type);
     }
     
