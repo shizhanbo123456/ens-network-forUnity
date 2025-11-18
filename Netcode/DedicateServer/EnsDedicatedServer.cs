@@ -21,6 +21,5 @@ public class EnsDedicatedServer:ServerBase
     {
         if (!On) return;
         base.ShutDown();
-        if (EnsInstance.ShowGeneralEvent) Debug.Log("[E]服务器端已关闭");
     }
 }

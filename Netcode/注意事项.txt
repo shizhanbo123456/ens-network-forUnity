@@ -1,0 +1,13 @@
+EnsBehaviour会占用生命周期的Start函数
+原Start改为_Start
+不能在Start调用之前设置为disable
+
+
+场景中自带的物体，不设置id，会自动为id为0的物体分配id（<0）
+场景中/预制体中，提前为物体分配任意id，会自动生成20e8-21e8范围的id，强制id碰撞检测，若碰撞会报错
+不在将预制体内设置物体id为0并且不使用自动分配
+EnsSpawner中，分配id在Awake之后，Start之前
+
+销毁时可以直接Destroy物体
+需要同步销毁则调用DestroyRpc
+本地单独销毁调用DestroyLocal，可以防止重复销毁

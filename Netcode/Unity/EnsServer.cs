@@ -26,7 +26,6 @@ public class EnsServer : ServerBase
         if (!On) return;
         base.ShutDown();
         Instance = null;
-        if (EnsInstance.ShowGeneralEvent) Debug.Log("[E]服务器端已关闭");
     }
     protected override void ReleaseUnmanagedMenory()
     {

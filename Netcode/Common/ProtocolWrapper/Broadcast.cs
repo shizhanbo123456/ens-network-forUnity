@@ -63,7 +63,6 @@ namespace ProtocolWrapper
             {
                 byte[] data = Format.GetBytes(s);
                 senderClient.Send(data, data.Length, broadcastEndPoint);
-                Debug.Log(s);
             }
             catch
             {

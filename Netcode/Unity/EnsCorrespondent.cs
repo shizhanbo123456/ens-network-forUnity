@@ -18,16 +18,16 @@ public class EnsCorrespondent :MonoBehaviour
     public ProtocolWrapper.ConcurrentType recvMode;
 
     public ProtocolWrapper.ProtocolType protocolType;
-    [Space]
 
+    [Space]
     public float KeyExistTime = 5f;//关键信息忽略时长
     public float KeySendInterval = 0.2f;//未确认的关键信息发送时长
     public float RKeyExistTime = 5f;//返回的关键信息忽略时长
 
-    public bool MessyLog = false;
+    [Space]
     public bool DevelopmentDebug = true;
-    public bool ShowGeneralEvent = true;
 
+    [Space]
     /// <summary>
     /// 上次接收心跳检测时间超过此阈值会认为断开了连接
     /// </summary>
@@ -51,9 +51,7 @@ public class EnsCorrespondent :MonoBehaviour
     {
         EnsInstance.Corr = this;
 
-        EnsInstance.MessyLog = MessyLog;
         EnsInstance.DevelopmentDebug = DevelopmentDebug;
-        EnsInstance.ShowGeneralEvent = ShowGeneralEvent;
 
         EnsInstance.KeyExistTime = KeyExistTime;
         EnsInstance.KeySendInterval = KeySendInterval;

@@ -74,17 +74,9 @@ public sealed class EnsSpawner : EnsBehaviour
     }
 
     /// <param name="mode">==-1 All   ==-2 IgnoreSelf</param>
-    public void CreateServerRpc(int id, int mode, KeyFormatType type = KeyFormatType.None)
+    public void CreateServerRpc(int id,SendTo mode, KeyFormatType type = KeyFormatType.None)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
-        CallFuncServrRpc(nameof(CreateLocal), mode, id.ToString(),id,type);//会处理未联网时的状态
+        CallFuncServrRpc(nameof(CreateLocal), (int)mode, id.ToString(),id,type);//会处理未联网时的状态
     }
     /// <summary>
     /// 此方法在非联网情况下无法运作
@@ -97,17 +89,9 @@ public sealed class EnsSpawner : EnsBehaviour
     ///可以通过此方法在其被创建时立即传入参数
     ///</summary>
     /// <param name="mode">==-1 All   ==-2 IgnoreSelf</param>
-    public void CreateServerRpc(int id, int mode,string param, KeyFormatType type = KeyFormatType.None)
+    public void CreateServerRpc(int id, SendTo mode,string param, KeyFormatType type = KeyFormatType.None)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-            if (mode != -1 && mode != -2)
-            {
-                Debug.LogError("检测到非法访问目标:" + mode);
-                mode = -1;
-            }
-        }
-        CallFuncServrRpc(nameof(CreateLocalP), mode, id.ToString()+'%'+param,id,type);//会处理未联网时的状态
+        CallFuncServrRpc(nameof(CreateLocalP), (int)mode, id.ToString()+'%'+param,id,type);//会处理未联网时的状态
     }
     /// <summary>
     /// 此方法在非联网情况下无法运作<br></br>

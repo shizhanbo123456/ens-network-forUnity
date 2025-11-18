@@ -8,9 +8,7 @@ public class EnsInstance
     public static EnsSpawner NOMSpawner;
 
 
-    public static bool MessyLog;
     public static bool DevelopmentDebug;
-    public static bool ShowGeneralEvent;
 
     public static float DisconnectThreshold = 3f;// 上次接收心跳检测时间超过此阈值会认为断开了连接
     public static float HeartbeatMsgInterval = 0.2f;// 发送心跳检测消息的间隔

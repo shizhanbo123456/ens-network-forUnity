@@ -24,9 +24,9 @@ public class EnsBehaviourCollection : MonoBehaviour
         {
             Behaviors[i].collection=this;
             Behaviors[i].ObjectId=idstart;
-            Behaviors[i].internalAllocateId = true;
+            Behaviors[i].IdAutoAllocated = true;
             idstart++;
-            EnsNetworkObjectManager.AddObject(Behaviors[i]);
+            //EnsNetworkObjectManager.AddObject(Behaviors[i]);//NOMAwake注册物体
         }
     }
     public void PreInit(string data)
@@ -45,6 +45,6 @@ public class EnsBehaviourCollection : MonoBehaviour
     }
     protected virtual void Respawn(string data)
     {
-        if (EnsInstance.DevelopmentDebug) Debug.LogWarning("[N]未重写：重新生成信息" + data);
+        Init(data);
     }
 }

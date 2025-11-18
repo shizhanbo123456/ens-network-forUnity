@@ -8,12 +8,9 @@ public static class EnsNetworkObjectManager
 
     //<0为玩家设置的初始化场景时制造的物体
     private static int sceneobjid = -1;
-    public static int AutoSceneObjId
+    internal static int GetAutoAllocatedId()
     {
-        get
-        {
-            return sceneobjid--;
-        }
+        return sceneobjid--;
     }
 
 
@@ -36,6 +33,7 @@ public static class EnsNetworkObjectManager
     private static Dictionary<int, int> fixedPriorityMap =
         new Dictionary<int, int>();
 
+    private static List<int>m_toRemove=new List<int>();
 
     internal static IEnumerable<int> GetPriority()
     {
@@ -51,13 +49,24 @@ public static class EnsNetworkObjectManager
     internal static void Update(int priority)
     {
         if (prioritizedUpdate.TryGetValue(priority, out var group))
-            foreach (var behaviour in group.Values)
+        {
+            foreach (var id in group.Keys)
             {
-                if (behaviour.nomEnabled)
+                if (group[id] == null)
                 {
-                    behaviour.ManagedUpdate();
+                    m_toRemove.Add(id);
+                    continue;
+                }
+                if (group[id].nomEnabled)
+                {
+                    group[id].ManagedUpdate();
                 }
             }
+            if(m_toRemove.Count > 0)
+            {
+                foreach (var i in m_toRemove) group.Remove(i);
+            }
+        }
     }
     /// <summary>
     /// 按优先级执行所有物体的FixedUpdate
@@ -65,18 +74,30 @@ public static class EnsNetworkObjectManager
     internal static void FixedUpdate(int priority)
     {
         if (prioritizedFixedUpdate.TryGetValue(priority, out var group))
-            foreach (var behaviour in group.Values)
+        {
+            foreach (var id in group.Keys)
             {
-                if (behaviour.gameObject.activeInHierarchy && behaviour.enabled)
+                if (group[id] == null)
                 {
-                    behaviour.FixedManagedUpdate();
+                    m_toRemove.Add(id);
+                    continue;
+                }
+                if (group[id].nomEnabled)
+                {
+                    group[id].ManagedUpdate();
                 }
             }
+            if (m_toRemove.Count > 0)
+            {
+                foreach (var i in m_toRemove) group.Remove(i);
+            }
+        }
     }
 
 
     internal static void AddObject(EnsBehaviour behaviour)
     {
+        //Debug.Log("添加id为" + behaviour.ObjectId + "的物体:"+behaviour.gameObject.name);
         if (behaviour == null)
         {
             Debug.LogWarning("尝试添加空的NOMBehaviour");
@@ -86,7 +107,7 @@ public static class EnsNetworkObjectManager
         if (objectId == 0) Debug.Log(behaviour.name);
         if (objectMap.ContainsKey(objectId))
         {
-            Debug.LogWarning($"id为{objectId}的物体已经被添加");
+            Debug.LogWarning($"id为{objectId}的物体{behaviour.gameObject.name}-{behaviour.GetType().ToString()}已经被添加");
             return;
         }
 
@@ -114,7 +135,6 @@ public static class EnsNetworkObjectManager
     {
         if (objectMap.TryGetValue(id, out var data))
             return data;
-        Debug.Log("未找到id为" + id + "的物体");
         return null;
     }
     internal static void RemoveObject(int id)

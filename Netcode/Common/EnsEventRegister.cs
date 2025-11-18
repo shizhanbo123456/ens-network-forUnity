@@ -224,6 +224,11 @@ public class EnsEventRegister
                 int id = int.Parse(s[0]);
                 string func = s[1];
                 EnsBehaviour obj = EnsNetworkObjectManager.GetObject(id);
+                if (obj == null)
+                {
+                    if(EnsInstance.DevelopmentDebug)Debug.LogError("未找到id为" + id + "的物体");
+                    return;
+                }
                 if (s.Count >= 4)
                 {
                     string param = s[3];

@@ -18,7 +18,6 @@ public abstract class EnsBehaviour : MonoBehaviour
 
     internal EnsBehaviourCollection collection;
 
-    //FuncInvokeMode All -1,IgnoreSelf -2,Custom
 
     private static readonly Dictionary<KeyFormatType, string> Key2Header = new Dictionary<KeyFormatType, string>() 
     { 
@@ -33,11 +32,10 @@ public abstract class EnsBehaviour : MonoBehaviour
         RoomOwner=-3
     }
 
-    internal bool internalAllocateId=false;
+    internal bool IdAutoAllocated=false;
     private bool startInvoked=false;
-    private bool destroyInvoked=false;
 
-    private void Start()
+    protected void Start()
     {
         NOMStart();
         _Start();
@@ -48,17 +46,18 @@ public abstract class EnsBehaviour : MonoBehaviour
         startInvoked = true;
         if (ObjectId == 0)
         {
-            ObjectId = EnsNetworkObjectManager.AutoSceneObjId;
-            internalAllocateId = true;
+            ObjectId = EnsNetworkObjectManager.GetAutoAllocatedId();
+            IdAutoAllocated = true;
         }
         else
         {
-            if (!internalAllocateId)
+            if (!IdAutoAllocated)
             {
                 int id = ObjectId % 100000000 + 2000000000;
                 if (EnsNetworkObjectManager.ManualAssignedId.Contains(id))
                 {
-                    Debug.LogError("手动分配的id发生冲突");
+                    if(EnsNetworkObjectManager.HasObject(id))
+                        Debug.LogError("手动分配的id发生冲突");
                 }
                 else
                 {
@@ -66,15 +65,11 @@ public abstract class EnsBehaviour : MonoBehaviour
                 }
             }
         }
-        if (!EnsNetworkObjectManager.HasObject(ObjectId)) EnsNetworkObjectManager.AddObject(this);
+        EnsNetworkObjectManager.AddObject(this);
     }
     protected virtual void _Start()
     {
         
-    }
-    protected void DisableInternalAllocatedId()
-    {
-        if (internalAllocateId) Debug.LogError(gameObject.name+"不应该使用自动分配的id，请手动分配");
     }
     public void DestroyRpc(KeyFormatType keyFormatType=KeyFormatType.Nonsequential)
     {
@@ -82,22 +77,8 @@ public abstract class EnsBehaviour : MonoBehaviour
     }
     public void DestroyLocal()
     {
-        try
-        {
-            foreach (var i in collection.Behaviors) i.NOMOnDestroy();
-            if (this != null) Destroy(gameObject);
-        }
-        catch
-        {
-            Debug.LogError("似乎意外直接销毁了一个网络物体");
-        }
-    }
-    private void NOMOnDestroy()
-    {
-        if (destroyInvoked) return;
-        destroyInvoked = true;
-        if(EnsNetworkObjectManager.HasObject(ObjectId))EnsNetworkObjectManager.RemoveObject(ObjectId);
-        if(!internalAllocateId)EnsNetworkObjectManager.ManualAssignedId.Remove(ObjectId);
+        //foreach (var i in collection.Behaviors) i.NOMOnDestroy();//物体管理器移除物体+人为分配id移除物体
+        if (collection != null) Destroy(collection.gameObject);
     }
     /// <summary>
     /// 需要发送数据时，在此Update中使用，减少调用到传输的延迟<br></br>
@@ -179,9 +160,6 @@ public abstract class EnsBehaviour : MonoBehaviour
     }
     public void CallFuncRpc(string func, List<int> targets, string param, int delay)
     {
-        if (EnsInstance.DevelopmentDebug)
-        {
-        }
         if (EnsInstance.Corr.networkMode == EnsCorrespondent.NetworkMode.None)
         {
             if (targets.Contains(EnsInstance.LocalClientId)) StartCoroutine(func, param);

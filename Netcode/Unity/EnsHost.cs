@@ -58,6 +58,5 @@ internal class EnsHost : EnsConnection
     {
         _client.ShutDown();
         _on = false;
-        if (EnsInstance.DevelopmentDebug) Debug.Log("[E]本地连接(ENCHost)已关闭");
     }
 }

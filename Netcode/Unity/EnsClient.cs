@@ -59,9 +59,8 @@ internal class EnsClient:SR
                 }
                 EnsInstance.ClientRecvData?.Invoke(data);
             }
-            catch (Exception e)
+            catch
             {
-                if(EnsInstance.MessyLog)Debug.LogError("[E]读取接收信息时发生异常" + data + " " + e.ToString());
             }
         }
     }
