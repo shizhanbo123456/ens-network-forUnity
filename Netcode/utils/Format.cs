@@ -65,7 +65,7 @@ public static class Format
     }
     public static List<T> StringToList<T>(string a,Func<string,T>converter, char c = ListSeparator)
     {
-        string[] s = a.Split(c, StringSplitOptions.RemoveEmptyEntries);
+        string[] s = a.Split(new char[] { c }, StringSplitOptions.RemoveEmptyEntries);
         List<T> list = new List<T>();
         foreach (var i in s) list.Add(converter.Invoke(i));
         return list;

@@ -184,26 +184,27 @@ public class KeyLibrary//处理的是未经NetcodeTool格式处理的信息，�
 }
 public class ENCKey
 {
-    public static int IndexRange=100000000;
+    private static Random Random = new Random();
+    public static int IndexRange = 100000000;
     public string Key;
     public int Index;
     public KeyLibrary.KeyFormatType Type;
     public enum KeyState
     {
-        TobeConfirmed,ConfirmedExisting,End
+        TobeConfirmed, ConfirmedExisting, End
     }
-    public KeyState State=KeyState.TobeConfirmed;
+    public KeyState State = KeyState.TobeConfirmed;
     public ReachTime ToConfirmIntervalLeft;
     public CustomCancel ConfirmedExistingCancel;
 
     public ENCKey(string data, KeyLibrary.KeyFormatType type)
     {
-        ToConfirmIntervalLeft=new ReachTime();
+        ToConfirmIntervalLeft = new ReachTime();
         ToConfirmIntervalLeft.ReachAt(-1f);
         ConfirmedExistingCancel = new CustomCancel();
         ConfirmedExistingCancel.CancelAfter(EnsInstance.KeyExistTime);
         Key = data;
-        Index = UnityEngine.Random.Range(IndexRange, IndexRange * 10 - 1);
+        Index = Random.Next(IndexRange, IndexRange * 10 - 1);
         Type = type;
     }
 }

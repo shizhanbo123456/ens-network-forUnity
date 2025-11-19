@@ -7,10 +7,12 @@ public class Loop
     {
         Time.Init();
     }
+#if UNITY_2017_1_OR_NEWER
     public static void InitClient()
     {
 
     }
+#endif
     public static void InitServer()
     {
 
@@ -20,11 +22,13 @@ public class Loop
         Time.Update();
         FrameCounter.Update();
     }
+#if UNITY_2017_1_OR_NEWER
     public static void LoopClient()
     {
         Broadcast.Update();
         EnsClientRequest.Update();
     }
+#endif
     public static void LoopServer()
     {
 
