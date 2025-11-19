@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public class EnsInstance
 {
+#if UNITY_2017_1_OR_NEWER
     public static EnsCorrespondent Corr;
     public static EnsSpawner NOMSpawner;
+#endif
 
     public static int LocalClientId = -1;
     public static int PresentRoomId = 0;
