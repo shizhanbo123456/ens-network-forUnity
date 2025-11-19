@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Utils;
 
 public class EnsRoomManager:Disposable
 {
@@ -6,6 +7,7 @@ public class EnsRoomManager:Disposable
     public SortedDictionary<int,EnsRoom> rooms = new SortedDictionary<int, EnsRoom>();
     private int RoomId;
 
+    public static bool PrintRoomData=false;
 
     internal EnsRoomManager(bool forceOneRoom=false)
     {
@@ -24,6 +26,7 @@ public class EnsRoomManager:Disposable
         rooms[RoomId].Join(conn);
         RoomId += 1;
         code= conn.room.RoomId;
+        if (PrintRoomData) Debug.Log(ToString());
         return true;
     }
     internal bool JoinRoom(EnsConnection conn, int id,out int code)
@@ -42,6 +45,7 @@ public class EnsRoomManager:Disposable
 
         room.Join(conn);
         code = room.RoomId;
+        if (PrintRoomData) Debug.Log(ToString());
         return true;
     }
     internal bool ExitRoom(EnsConnection conn,out int id)
@@ -53,6 +57,7 @@ public class EnsRoomManager:Disposable
         }
         conn.room.Exit(conn);
         id = 0;
+        if (PrintRoomData) Debug.Log(ToString());
         return true;
     }
 
@@ -81,7 +86,7 @@ public class EnsRoomManager:Disposable
     public override string ToString()
     {
         string r = "房间信息：";
-        foreach (var i in rooms)
+        foreach (var i in rooms.Values)
         {
             r += i.ToString() + " ";
         }

@@ -1,7 +1,7 @@
 using ProtocolWrapper;
 using System.Collections.Generic;
 using System.Text;
-using UnityEngine;
+using Utils;
 using request = Ens.Request;
 public class EnsEventRegister
 {
@@ -428,6 +428,7 @@ public class EnsEventRegister
     public static void LoopCommon()
     {
         Utils.Time.Update();
+        Utils.FrameCounter.Update();
     }
     public static void LoopClient()
     {

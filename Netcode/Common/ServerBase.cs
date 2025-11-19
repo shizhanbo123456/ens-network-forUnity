@@ -56,23 +56,21 @@ public class ServerBase : Disposable
         EndListening();
         foreach (var i in ClientConnections.Values) i.ShutDown();
         Listener.ShutDown();
+        RoomManager.ShutDown();
     }
     protected override void ReleaseManagedMenory()
     {
         foreach (var i in ClientConnections.Values) i.Dispose();
         ClientConnections.Clear();
-        RoomManager.Dispose();
         Listener.Dispose();
-        foreach (var i in ClientConnections.Values) i.Dispose();
-        ClientConnections.Clear();
+        RoomManager.Dispose();
         base.ReleaseManagedMenory();
     }
     protected override void ReleaseUnmanagedMenory()
     {
         ClientConnections = null;
-        RoomManager = null;
         Listener = null;
-        ClientConnections = null;
+        RoomManager = null;
         base.ReleaseUnmanagedMenory();
     }
 }

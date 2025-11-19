@@ -7,6 +7,9 @@ public class EnsInstance
     public static EnsCorrespondent Corr;
     public static EnsSpawner NOMSpawner;
 
+    public static int LocalClientId = -1;
+    public static int PresentRoomId = 0;
+    public static bool HasAuthority = false;
 
     public static bool DevelopmentDebug;
 
@@ -84,8 +87,4 @@ public class EnsInstance
 
     internal static Action<string, EnsConnection> ServerRecvData;
     internal static Action<string> ClientRecvData;
-
-    public static int LocalClientId = -1;
-    public static int PresentRoomId = 0;
-    public static bool HasAuthority = false;
 }

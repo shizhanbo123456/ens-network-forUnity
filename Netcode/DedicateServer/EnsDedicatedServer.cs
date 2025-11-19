@@ -1,6 +1,6 @@
+#if !UNITY_2017_1_OR_NEWER
 using ProtocolWrapper;
 using System.Net;
-using UnityEngine;
 
 public class EnsDedicatedServer:ServerBase
 {
@@ -23,3 +23,4 @@ public class EnsDedicatedServer:ServerBase
         base.ShutDown();
     }
 }
+#endif
