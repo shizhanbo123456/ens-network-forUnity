@@ -1,9 +1,8 @@
-#if !UNITY_2017_1_OR_NEWER
 using System.Net;
 
 public class DedicateServerProgram
 {
-    public EnsDedicatedServer server;
+    public EnsServer server;
 
     public float DisconnectThreshold = 3f;
     public float HeartbeatMsgInterval = 0.2f;
@@ -22,18 +21,19 @@ public class DedicateServerProgram
         IPAddress ip = IP == string.Empty ? IPAddress.Any : IPAddress.Parse(IP);
         EnsRoomManager.PrintRoomData = PrintRoomData;
 
-        EnsEventRegister.InitServer();
-        EnsEventRegister.InitCommon();
+        EnsServerEventRegister.RegistDedicateServer();
 
-        server=new EnsDedicatedServer(ip,port);
+        global::Loop.InitServer();
+        global::Loop.InitCommon();
+
+        server=new EnsServer(ip,port);
         server.StartListening();
     }
     public void Loop()
     {
-        EnsEventRegister.LoopCommon();
-        EnsEventRegister.LoopServer();
+        global::Loop.LoopCommon();
+        global::Loop.LoopServer();
 
         server.Update();
     }
 }
-#endif
